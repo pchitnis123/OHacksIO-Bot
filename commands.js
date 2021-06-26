@@ -8,6 +8,7 @@ var commandList = []
 const maxStrikes = 3
 var usersCache = []
 
+const deadline = Date.parse('9 Sep 2021 11:00:00 EST')
 //this function is called once on bot connection to correctly initialize the array
 function initialize() {
     botChannelsIDs.forEach(ID => { botChannels.push(client.channels.cache.find(channel => channel.id === ID)) })
@@ -181,21 +182,29 @@ commandList.push(new Command('faq', msg => {
 
 commandList.push(new Command('assist', msg => {
     //let message = msg.content.r
-    let member = msg.member
+    let user = msg.author
     const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
 
     const Embed = new Discord.MessageEmbed()
         .setColor(0xFF0000)
-        .setTitle(member.displayName + ' needs assistance!')
-        .setDescription(member.toString() + ' has Requested Assistance from the chat ' + msg.channel.toString())
+        .setTitle(user.username + ' needs assistance!')
+        .setDescription(user.toString() + ((msg.guild)? (' has Requested Assistance from the chat ' + msg.channel.toString()):' has Requested Assistance in the DM'))
         .setURL(msg.url)
     channel01.send(Embed);
 
     const Embed2 = new Discord.MessageEmbed()
         .setColor(0xFF0000)
-        .setDescription(member.toString() + ", your message has been sent to the Organizers.\nThey will take note and get back to you as soon as possible.")
+        .setDescription(user.toString() + ", your message has been sent to the Organizers.\nThey will take note and get back to you as soon as possible.")
     msg.channel.send(Embed2);
-}, allowDM=false))
+}, allowDM=true))
+
+commandList.push(new Command('timeleft', msg => {
+    const timeLeft = deadline - Date.now() 
+    const embed = new Discord.MessageEmbed()
+    .setColor(0xFF0000)
+    .setTitle('You have ' + timeLeft.getHours() + ' hours and' + timeLeft.getMinutes() + ' minutes left')
+    msg.reply(embed)
+}, allowDM=true))
 
 
 
