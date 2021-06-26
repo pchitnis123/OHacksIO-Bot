@@ -87,6 +87,10 @@ commandList.push(new Command('help', msg => {
             name: 'o.assist',
             value: 'Send a message to our organizers saying you need assistance. They will get back to you ASAP',
             inline: true
+        },{
+            name: 'o.mywarnings',
+            value: 'Display the amount of warnings (strikes) you\'ve got for breaking the rules',
+            inline: true
         })
     msg.channel.send(Embed);
 }, allowDM=true))
@@ -177,20 +181,21 @@ commandList.push(new Command('faq', msg => {
 
 commandList.push(new Command('assist', msg => {
     //let message = msg.content.r
-    let user = msg.author.toString()
+    let member = msg.member
     //const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
     const channel01 = client.channels.cache.find(channel => channel.id === '858020157884203048');
     
 
     const Embed = new Discord.MessageEmbed()
         .setColor(0xFF0000)
-        .setTitle(user)
-        .setDescription("Has Requested Assistance.")
+        .setTitle(member.displayName + ' needs assistance!')
+        .setDescription(member.toString() + ' has Requested Assistance from the chat ' + msg.channel.toString())
+        .setURL(msg.url)
     channel01.send(Embed);
 
     const Embed2 = new Discord.MessageEmbed()
         .setColor(0xFF0000)
-        .setDescription("Your message has been sent to the Organizers.\nThey will take note and get back to you as soon as possible.")
+        .setDescription(member.toString() + ", your message has been sent to the Organizers.\nThey will take note and get back to you as soon as possible.")
     msg.channel.send(Embed2);
 }, allowDM=false))
 
@@ -202,24 +207,38 @@ commandList.push(new Command('warn', msg => {
         const member = msg.guild.member(user);
             if (member) {
                 const memberIndexInUsersCache = usersCache.indexOf(member)
+                
+                let message
+                
                 if (memberIndexInUsersCache >= 0)
                 {
                     usersCache[memberIndexInUsersCache].strikes++
                     if (usersCache[memberIndexInUsersCache].strikes >= maxStrikes)
                     {
-                        member.lastMessage.channel.send(member.displayName + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event.')
+                        message = member.toString() + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event.'
+                        usersCache[memberIndexInUsersCache].isBanned = true
                         member.kick('You were kicked because you\'ve reached ' + maxStrikes + 'strikes')
                     }
                     else
                     {
-                        member.lastMessage.channel.send(member.toString() + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.')
+                        message = member.toString() + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
                     }
                 }
                 else {
                     member.strikes = 1
                     usersCache.push(member)
-                    member.lastMessage.channel.send(member.toString() + ', you have 1 strike! You will be banned from the server and disqualified from the event when you reach ' + maxStrikes + ' strikes.')
+                    message = member.toString() + ', you have 1 strike! You will be banned from the server and disqualified from the event when you reach ' + maxStrikes + ' strikes.'
                 }
+            
+                if (member.lastMessage)
+                    member.lastMessage.channel.send(message)
+
+                if (!member.dmChannel)
+                    member.createDM().then(channel => {
+                        channel.send(message)
+                    })
+                else
+                    member.dmChannel.send(message)
             }
             else
                 msg.reply('User ' + user + ' not found on this server!')
@@ -227,3 +246,13 @@ commandList.push(new Command('warn', msg => {
     else
         msg.reply('Please specify a valid user you want to warn')
 }, allowDM=false, adminOnly=true))
+
+commandList.push(new Command('mywarnings', msg => {
+    member = usersCache.find(mem => mem.user.id === msg.author.id)
+    if (!member || !member.strikes || member.strikes <= 0)
+        msg.reply('You don\'t have any warning. That\'s awesome, keep it up!')
+    else if (member.isBanned)
+        msg.reply('You have been banned from the event!')
+    else
+        msg.reply('You have ' + member.strikes + ' strike(s). ' + (maxStrikes - member.strikes) + ' more and you will be banned')
+}, allowDM=true))
