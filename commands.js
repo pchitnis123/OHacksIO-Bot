@@ -1,4 +1,4 @@
-const botChannelsIDs = ['842112480665665536', '843300016440999969', '857889186814885901', '858020157884203048']
+const botChannelsIDs = ['842112480665665536', '843300016440999969']
 const botChannels = []
 
 const adminRoleName = 'admin'
@@ -76,7 +76,7 @@ commandList.push(new Command('help', msg => {
         .setFooter("Created by the Tech Team")
         .addFields({
             name: 'o.rules',
-            value: 'See the list of rules that you must follow in this server',
+            value: 'See the list of rules that you must follow in this server.',
             inline: true
         },{
             name: 'o.faq',
@@ -85,11 +85,11 @@ commandList.push(new Command('help', msg => {
 
         },{
             name: 'o.assist',
-            value: 'Send a message to our organizers saying you need assistance. They will get back to you ASAP',
+            value: 'Send a message to our organizers saying you need assistance. They will get back to you ASAP.',
             inline: true
         },{
             name: 'o.mywarnings',
-            value: 'Display the amount of warnings (strikes) you\'ve got for breaking the rules',
+            value: 'Display the amount of warnings (strikes) you\'ve got for breaking the rules.',
             inline: true
         })
     msg.channel.send(Embed);
@@ -102,24 +102,24 @@ commandList.push(new Command('rules', msg => {
     .setFooter("Created by the Tech Team")
     .addFields({
         name: "Rule 1:",
-        value: 'No racism',
+        value: 'No racism.',
         inline: true
 
     },{
         name: 'Rule 2:',
-        value: 'No derogatory comments',
+        value: 'No derogatory comments.',
         inline: true
     },{
         name: 'Rule 3',
-        value: 'Keep your nickname as your actual name',
+        value: 'Keep your nickname as your actual name.',
         inline: true
     },{
         name: 'Rule 4:',
-        value: 'No inappropriate profile pictures',
+        value: 'No inappropriate profile pictures.',
         inline: true
     },{
         name: 'Rule 5:',
-        value: 'Moderators reserve the right to use their own discretion regardless of any rule',
+        value: 'Moderators reserve the right to use their own discretion regardless of any rule.',
         inline: true
     },{
         name: 'Rule 6:',
@@ -182,9 +182,7 @@ commandList.push(new Command('faq', msg => {
 commandList.push(new Command('assist', msg => {
     //let message = msg.content.r
     let member = msg.member
-    //const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
-    const channel01 = client.channels.cache.find(channel => channel.id === '858020157884203048');
-    
+    const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
 
     const Embed = new Discord.MessageEmbed()
         .setColor(0xFF0000)
@@ -250,9 +248,9 @@ commandList.push(new Command('warn', msg => {
 commandList.push(new Command('mywarnings', msg => {
     member = usersCache.find(mem => mem.user.id === msg.author.id)
     if (!member || !member.strikes || member.strikes <= 0)
-        msg.reply('You don\'t have any warning. That\'s awesome, keep it up!')
+        msg.reply('You don\'t have any warnings. That\'s awesome, keep it up!')
     else if (member.isBanned)
-        msg.reply('You have been banned from the event!')
+        msg.reply('You have been banned from the event.')
     else
         msg.reply('You have ' + member.strikes + ' strike(s). ' + (maxStrikes - member.strikes) + ' more and you will be banned')
 }, allowDM=true))
