@@ -199,10 +199,10 @@ commandList.push(new Command('assist', msg => {
 }, allowDM=true))
 
 commandList.push(new Command('timeleft', msg => {
-    const timeLeft = deadline - Date.now() 
+    const timeLeft = new Date(deadline - Date.now())
     const embed = new Discord.MessageEmbed()
     .setColor(0xFF0000)
-    .setTitle('You have ' + timeLeft.getHours() + ' hours and' + timeLeft.getMinutes() + ' minutes left')
+    .setTitle('You have ' + timeLeft.getDate() + ' day(s), ' + timeLeft.getHours() + ' hour(s) and ' + timeLeft.getMinutes() + ' minute(s) left')
     msg.reply(embed)
 }, allowDM=true))
 
