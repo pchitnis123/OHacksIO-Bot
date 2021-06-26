@@ -1,55 +1,97 @@
-module.exports = function (msg){
-    const botCommands = client.channels.cache.find(channel => channel.id === "842112480665665536");
-    const botTest = client.channels.cache.find(channel => channel.id === "843300016440999969");
+const botChannelsIDs = ['842112480665665536', '843300016440999969', '857889186814885901', '858020157884203048']
+const botChannels = []
 
-    const arrayCommands = ['!operate', '!rules', '!faq', '!assist']
+const adminRoleName = 'admin'
+const prefix = 'o.'
+var commandList = []
 
-    if(msg.channel === botCommands || msg.channel === botTest) {
-        if(msg.content === arrayCommands[0]){
-            operate(msg);
-        }
-        if(msg.content === arrayCommands[1]){
-            rules(msg);
-        }
-        if(msg.content === arrayCommands[2]){
-            faq(msg);
-        }
-        if(msg.content.startsWith(arrayCommands[3])){
-            assist(msg);
-        }
-    } 
-    else if(msg.content === arrayCommands[0] || msg.content === arrayCommands[1] || msg.content === arrayCommands[2] || msg.content.startsWith(arrayCommands[3])){
-        const Embed = new Discord.MessageEmbed()
-        .setTitle('Not the correct channel. Please try again in the correct channel.')
-        .setColor(0xFF0000)
-        .setFooter("Created by the Tech Team")
-        msg.channel.send(Embed)
+const maxStrikes = 3
+var usersCache = []
+
+//this function is called once on bot connection to correctly initialize the array
+function initialize() {
+    botChannelsIDs.forEach(ID => { botChannels.push(client.channels.cache.find(channel => channel.id === ID)) })
+}
+class Command {
+    constructor(name, behaviour, allowDM = false, adminOnly = false) {
+        this.name = name
+        this.behaviour = behaviour
+        this.allowDM = allowDM
+        this.adminOnly = adminOnly
+    }
+    execute(msg, commandParams) {
+        if (this.allowDM || msg.guild)
+            if (!this.adminOnly || (msg.guild && msg.member.roles.cache.find(role => role.name == adminRoleName)))
+                this.behaviour(msg, commandParams)
+            else
+                msg.reply('This command is for admins only!')
+        else
+            msg.reply('This command is for server only!')
     }
 }
 
-function operate (msg){
+//function to execute when a new message recieved
+function handle (msg){
+    if (msg.content.startsWith(prefix)) //check if starts with prefix
+    {
+            const command = msg.content.substring(prefix.length) //remove the prefix
+            if (command) //if command is valid (not only prefix)
+            {
+                const commandComponents = command.split(' ', 1) //split the command into components divided with space
+                const commandBody = commandComponents[0] //extract the command body
+                
+                const executable = commandList.find(com => com.name === commandBody) //find an executable command from the array
+                if (executable)
+                {
+                        if (!msg.guild || botChannels.find(channel => channel === msg.channel)) { //check if in the correct channel
+                            msg.react('👌') //ok reaction when command is handled. Quite optional but in my humble oppinion looks kinda cool
+                            executable.execute(msg, commandComponents.slice(1)) //execute the command, passing message and command parameters in an array
+                        }
+                        else {
+                            const Embed = new Discord.MessageEmbed()
+                            .setTitle('Not the correct channel. Please try again in the correct channel.')
+                            .setColor(0xFF0000)
+                            //.setFooter("Created by the Tech Team") //I don't think we really need to write credits under an error message
+                            msg.channel.send(Embed)
+                        }
+                }
+                else
+                    msg.reply('Command ' + commandBody + ' is not valid!') //non-valid command error message
+                }
+            else
+                msg.reply('Please enter a valid command') //empty command error message
+    }
+}
+
+module.exports = {initialize, handle}
+
+//Adding commands
+//I did not change the methods themselves, but as you can see, now to create a command you only need to push a new Command object into an array
+//Also, in addition to msg parameter, these function also recieve an array of commend params. For example, 'o.question how do I init a repository?' will provide this array: ['how', 'do', 'I', 'init', 'a', 'repository?'] or 'o.setTimer 2' will provide ['2']
+//Third and forth parameters are booleans representing whether the command is allowed for DMs and if it is for admins only. Optional
+commandList.push(new Command('help', msg => {
     const Embed = new Discord.MessageEmbed()
         .setTitle('Comamnds for the OHacksIO bot:')
         .setColor(0xFF0000)
         .setFooter("Created by the Tech Team")
         .addFields({
-            name: '!rules',
+            name: 'o.rules',
             value: 'See the list of rules that you must follow in this server',
             inline: true
         },{
-            name: '!faq',
+            name: 'o.faq',
             value: 'See our frequently answered questions list.',
             inline: true
 
         },{
-            name: '!assist',
+            name: 'o.assist',
             value: 'Send a message to our organizers saying you need assistance. They will get back to you ASAP',
             inline: true
         })
     msg.channel.send(Embed);
-}
+}, allowDM=true))
 
-function rules (msg){
+commandList.push(new Command('rules', msg => {
     const Embed = new Discord.MessageEmbed()
     .setTitle('Rules for the OHacksIO server:')
     .setColor(0xFF0000)
@@ -85,9 +127,9 @@ function rules (msg){
         inline: true
     })
     msg.channel.send(Embed);
-}
+}, allowDM=true))
 
-function faq(msg) {
+commandList.push(new Command('faq', msg => {
     const Embed = new Discord.MessageEmbed()
         .setColor(0xFF0000)
         .setTitle("Frequently Asked Questions:")
@@ -131,13 +173,14 @@ function faq(msg) {
             inline: true
         })
     msg.channel.send(Embed);
-}
+}, allowDM=true))
 
-function assist(msg){
-    //let message = msg.content.replace('!assist', '');
-    let user = msg.member.user.tag;
-    user = user.toString();
-    const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
+commandList.push(new Command('assist', msg => {
+    //let message = msg.content.r
+    let user = msg.author.toString()
+    //const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
+    const channel01 = client.channels.cache.find(channel => channel.id === '858020157884203048');
+    
 
     const Embed = new Discord.MessageEmbed()
         .setColor(0xFF0000)
@@ -149,4 +192,38 @@ function assist(msg){
         .setColor(0xFF0000)
         .setDescription("Your message has been sent to the Organizers.\nThey will take note and get back to you as soon as possible.")
     msg.channel.send(Embed2);
-}
+}, allowDM=false))
+
+
+
+commandList.push(new Command('warn', msg => {
+    const user = msg.mentions.users.first()
+    if (user) {
+        const member = msg.guild.member(user);
+            if (member) {
+                const memberIndexInUsersCache = usersCache.indexOf(member)
+                if (memberIndexInUsersCache >= 0)
+                {
+                    usersCache[memberIndexInUsersCache].strikes++
+                    if (usersCache[memberIndexInUsersCache].strikes >= maxStrikes)
+                    {
+                        member.lastMessage.channel.send(member.displayName + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event.')
+                        member.kick('You were kicked because you\'ve reached ' + maxStrikes + 'strikes')
+                    }
+                    else
+                    {
+                        member.lastMessage.channel.send(member.toString() + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.')
+                    }
+                }
+                else {
+                    member.strikes = 1
+                    usersCache.push(member)
+                    member.lastMessage.channel.send(member.toString() + ', you have 1 strike! You will be banned from the server and disqualified from the event when you reach ' + maxStrikes + ' strikes.')
+                }
+            }
+            else
+                msg.reply('User ' + user + ' not found on this server!')
+    }
+    else
+        msg.reply('Please specify a valid user you want to warn')
+}, allowDM=false, adminOnly=true))

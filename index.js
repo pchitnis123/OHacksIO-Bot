@@ -2,11 +2,13 @@ const Discord = require('discord.js');
 const client = new Discord.Client();
 global.client = client;
 global.Discord = Discord;
-client.login('ODQyMTAxOTUxODU1NzIyNTA3.YJwajg.U_xlbm4YCtxlRoFhk8pID7es3ws');
+client.login('ODU3ODg1NzY0NTg2NzAwODQy.YNWGYQ.1WUcp0XIhalU2VtjgS_StcmxHMc')
+const commandHandler = require("./commands");
+//client.login('ODQyMTAxOTUxODU1NzIyNTA3.YJwajg.U_xlbm4YCtxlRoFhk8pID7es3ws')
 
-client.on('ready', checkOn);
-function checkOn(){
+client.on('ready', () => {
   console.log(`OHacksIO bot online.`); 
+  commandHandler.initialize()
   /*
   const channel01 = client.channels.cache.find(channel => channel.id === "858163151022850049");
 
@@ -54,9 +56,6 @@ function checkOn(){
         inline: true
     },)
     channelRules.send(Embed);*/
-}
+})
 
-
-const commandHandler = require("./commands");
-
-client.on("message", commandHandler);
+client.on("message", commandHandler.handle);
