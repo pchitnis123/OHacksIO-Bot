@@ -128,6 +128,11 @@ commandList.push(new Command('rules', msg => {
         inline: true
     },{
         name: 'Rule 7:',
+        value: 'Do not ask a question to an organizer without having a specific question in mind.',
+        inline: true
+    },
+    {
+        name: 'Rule 8:',
         value: 'No @everyone/@here mentioning without permission.',
         inline: true
     })
@@ -181,7 +186,6 @@ commandList.push(new Command('faq', msg => {
 }, allowDM=true))
 
 commandList.push(new Command('assist', msg => {
-    //let message = msg.content.r
     let user = msg.author
     const channel01 = client.channels.cache.find(channel => channel.id === "857856329670328370");
 
