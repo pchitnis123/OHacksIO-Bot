@@ -2,49 +2,49 @@ module.exports = {
    rules: function() {
         const channelRules = client.channels.cache.find(channel => channel.id === "840055971492921355");
         const Embed = new Discord.MessageEmbed()
-        .setTitle('Rules for the OHacksIO server:')
-        .setColor(0xFF0000)
-        .setFooter("Created by the Tech Team")
-        .setDescription('By joining this server, you consent that if you violate any of the following rules, the organizers reserve the right to ban you from this server and from competing in the hackathon.')
-        .addFields({
-            name: "Rule 1:",
-            value: 'No racism',
-            inline: true
+            .setTitle('Rules for the OHacksIO discord server:')
+            .setColor(0xFF0000)
+            .setFooter("Created by the Tech Team")
+            .setDescription('By joining this server, you consent that if you violate any of the following rules, the organizers reserve the right to ban you from this server and from competing in the hackathon.')
+            .addFields({
+                name: "Rule 1:",
+                value: 'No racism',
+                inline: true
 
-        },{
-            name: 'Rule 2:',
-            value: 'No derogatory comments',
-            inline: true
-        },{
-            name: 'Rule 3:',
-            value: 'Failure to follow Rules 1 and 2 will prompt the bot to automatically send alerts to the organizers. There may be consequences.',
-            inline: true
-        },{
-            name: 'Rule 4:',
-            value: 'Keep your nickname as your actual name',
-            inline: true
-        },{
-            name: 'Rule 5:',
-            value: 'No inappropriate profile pictures',
-            inline: true
-        },{
-            name: 'Rule 6:',
-            value: 'Moderators reserve the right to use their own discretion regardless of any rule',
-            inline: true
-        },{
-            name: 'Rule 7:',
-            value: 'No bugs, exploits, glitches, hacks, etc.',
-            inline: true
-        },{
-            name: 'Rule 8:',
-            value: 'Do not ask a question to an organizer without having a specific question in mind. [See here](https://dontasktoask.com)',
-            inline: true
-        },
-        {
-            name: 'Rule 9:',
-            value: 'No @everyone/@here mentioning without permission.',
-            inline: true
-        },)
+            },{
+                name: 'Rule 2:',
+                value: 'No derogatory comments or profanity',
+                inline: true
+            },{
+                name: 'Rule 3:',
+                value: 'Failure to follow Rules 1 and 2 will automatically prompt the bot to send alerts to the organizers. There may be consequences.',
+                inline: true
+            },{
+                name: 'Rule 4:',
+                value: 'Keep your nickname as your actual name',
+                inline: true
+            },{
+                name: 'Rule 5:',
+                value: 'No inappropriate profile pictures',
+                inline: true
+            },{
+                name: 'Rule 6:',
+                value: 'Moderators reserve the right to use their own discretion regardless of any rule',
+                inline: true
+            },{
+                name: 'Rule 7:',
+                value: 'No bugs, exploits, glitches, hacks, etc.',
+                inline: true
+            },{
+                name: 'Rule 8:',
+                value: 'Do not ask a question to an organizer without having a specific question in mind. [See here](https://dontasktoask.com)',
+                inline: true
+            },
+            {
+                name: 'Rule 9:',
+                value: 'No @everyone/@here mentioning without permission.',
+                inline: true
+            },)
         channelRules.send(Embed);
    },
 

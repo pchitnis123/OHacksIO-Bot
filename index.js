@@ -10,8 +10,8 @@ const firstMessage = require('./first-message')
 client.on('ready', () => {
   console.log(`OHacksIO bot online.`); 
   commandHandler.initialize()
-  //firstMessage.rules()
-  //firstMessage.welcome()
+  firstMessage.rules()
+  firstMessage.welcome()
 })
 
 client.on("message", commandHandler.handle);
