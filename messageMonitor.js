@@ -20,7 +20,14 @@ module.exports = {
                     .setTitle('Forbidden Phrase Monitor')
                     .setDescription('You have said a forbidden phrase. The organizers have been notified and may reach out to you.')
                     .setFooter("Created by the Tech Team")
-                    user.send(Embed2)
+
+                const member = msg.guild.member(user);
+                if (!member.dmChannel)
+                    member.createDM().then(channel => {
+                            channel.send(Embed2).catch(() => console.log('Error sending a warn DM!'))
+                    })
+                else
+                    member.dmChannel.send(Embed2).catch(() => console.log('Error sending a warn DM!'))
 
                 
                 msg.delete();
