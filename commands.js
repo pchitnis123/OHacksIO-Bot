@@ -8,7 +8,7 @@ var commandList = []
 const maxStrikes = 3
 var usersCache = []
 
-const deadline = Date.parse('9 Sep 2021 11:00:00 EST')
+const deadline = Date.parse('10 Aug 2021 3:00:00 PM EST')
 //this function is called once on bot connection to correctly initialize the array
 function initialize() {
     botChannelsIDs.forEach(ID => { botChannels.push(client.channels.cache.find(channel => channel.id === ID)) })
@@ -207,10 +207,21 @@ commandList.push(new Command('assist', msg => {
 }, allowDM=true))
 
 commandList.push(new Command('timeleft', msg => {
-    const timeLeft = new Date(deadline - Date.now())
+    const timeLeft = deadline - Date.now()
+    console.log(timeLeft)
+    console.log(timeLeft % (24*3600000) / 3600000)
+    const days = Math.floor(timeLeft / (24*3600000))
+    const hours = Math.floor(timeLeft % (24*3600000) / 3600000)
+    const minutes = Math.floor(timeLeft % (3600000) / 60000)
+    let message = 'You have ' + days + ' day(s), ' + hours + ' hour(s) and ' + minutes + ' minute(s) left'
+    if (!days && !hours)
+        message = 'You have ' + minutes + ' minute(s) left'
+    else if (!days)
+        message = 'You have ' + hours + ' hour(s) and ' + minutes + ' minute(s) left'
+
     const embed = new Discord.MessageEmbed()
     .setColor(0xFF0000)
-    .setTitle('You have ' + timeLeft.getDate() + ' day(s), ' + timeLeft.getHours() + ' hour(s) and ' + timeLeft.getMinutes() + ' minute(s) left')
+    .setTitle(message)
     msg.reply(embed)
 }, allowDM=true))
 
