@@ -1,14 +1,14 @@
-const botChannelsIDs = ['842112480665665536', '843300016440999969']
+const botChannelsIDs = ['842112480665665536', '843300016440999969', '874667083001118770', '874667100730437714']
 const botChannels = []
 
-const adminRoleName = 'admin'
+const adminRoleName = 'Organizer'
 const prefix = 'o.'
 var commandList = []
 
 const maxStrikes = 3
 var usersCache = []
 
-const deadline = Date.parse('9 Sep 2021 11:00:00 EST')
+const deadline = Date.parse('6 Sep 2021 8:00:00 EST')
 //this function is called once on bot connection to correctly initialize the array
 function initialize() {
     botChannelsIDs.forEach(ID => { botChannels.push(client.channels.cache.find(channel => channel.id === ID)) })
@@ -87,6 +87,10 @@ commandList.push(new Command('help', msg => {
         },{
             name: 'o.assist',
             value: 'Send a message to our organizers saying you need assistance. They will get back to you ASAP.',
+            inline: true
+        },{
+            name: 'o.timeleft',
+            value: 'See how much time you have left before your project is due',
             inline: true
         },{
             name: 'o.mywarnings',
@@ -210,7 +214,7 @@ commandList.push(new Command('timeleft', msg => {
     const timeLeft = new Date(deadline - Date.now())
     const embed = new Discord.MessageEmbed()
     .setColor(0xFF0000)
-    .setTitle('You have ' + timeLeft.getDate() + ' day(s), ' + timeLeft.getHours() + ' hour(s) and ' + timeLeft.getMinutes() + ' minute(s) left')
+    .setTitle('You have ' + timeLeft.getDate() + ' day(s), ' + timeLeft.getHours() + ' hour(s) and ' + timeLeft.getMinutes() + ' minute(s) left to turn in your project')
     msg.reply(embed)
 }, allowDM=true))
 
@@ -245,7 +249,7 @@ commandList.push(new Command('warn', msg => {
                     message = member.toString() + ', you have 1 strike! You will be banned from the server and disqualified from the event when you reach ' + maxStrikes + ' strikes.'
                 }
             
-                if (member.lastMessage)
+                if(member.lastMessage)
                     member.lastMessage.channel.send(message)
 
                 if (!member.dmChannel)

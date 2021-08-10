@@ -54,7 +54,7 @@ module.exports = {
         const Embed = new Discord.MessageEmbed()
             .setColor(0xFF0000)
             .setTitle("Welcome to the OHacksIO discord server!")
-            .setDescription('OHacksIO is proud to present its first ever virtual hackathon! A Hackathon is a coding competition where competitors use their coding knowledge to accomplish a given task. Our Hackathon will be hosted from September 4th 2021 to September 6th 2021. \n\nThe OHacksIO bot is online and can be used by everyone. To learn about the commands it has, type "o.help" into the bot-commands channel.\n\nIt is vital that you check this server at least twice per day because this is where we will be doing most of the major communication, planning, and organizing.')
+            .setDescription('OHacksIO is proud to present its first ever virtual hackathon! A Hackathon is a coding competition where competitors use their coding knowledge to accomplish a given task. Our Hackathon will be hosted from September 4th 2021 to September 6th 2021. \n\nThe OHacksIO bot is online and can be used by everyone. To learn about the commands it has, type "o.help" into a bot-commands channel.\n\nIt is vital that you check this server at least twice per day because this is where we will be doing most of the major communication, planning, and organizing.')
         channel01.send(Embed);
    }
 }
