@@ -8,7 +8,7 @@ var commandList = []
 const maxStrikes = 3
 var usersCache = []
 
-const deadline = Date.parse('10 Aug 2021 3:00:00 PM EST')
+const deadline = new Date('6 Sep 2021 8:00:00 AM EDT')
 //this function is called once on bot connection to correctly initialize the array
 function initialize() {
     botChannelsIDs.forEach(ID => { botChannels.push(client.channels.cache.find(channel => channel.id === ID)) })
@@ -208,8 +208,6 @@ commandList.push(new Command('assist', msg => {
 
 commandList.push(new Command('timeleft', msg => {
     const timeLeft = deadline - Date.now()
-    console.log(timeLeft)
-    console.log(timeLeft % (24*3600000) / 3600000)
     const days = Math.floor(timeLeft / (24*3600000))
     const hours = Math.floor(timeLeft % (24*3600000) / 3600000)
     const minutes = Math.floor(timeLeft % (3600000) / 60000)
