@@ -112,34 +112,34 @@ commandList.push(new Command('rules', msg => {
                 inline: true
             },{
                 name: 'Rule 3:',
-                value: 'Failure to follow Rules 1 and 2 will automatically prompt the bot to send alerts to the organizers. There may be consequences.',
-                inline: true
-            },{
-                name: 'Rule 4:',
                 value: 'Keep your nickname as your actual name',
                 inline: true
             },{
-                name: 'Rule 5:',
+                name: 'Rule 4:',
                 value: 'No inappropriate profile pictures',
                 inline: true
             },{
-                name: 'Rule 6:',
-                value: 'Moderators reserve the right to use their own discretion regardless of any rule',
-                inline: true
-            },{
-                name: 'Rule 7:',
+                name: 'Rule 5:',
                 value: 'No bugs, exploits, glitches, hacks, etc.',
                 inline: true
             },{
-                name: 'Rule 8:',
-                value: 'Do not ask a question to an organizer without having a specific question in mind. [See here](https://dontasktoask.com)',
+                name: 'Rule 6:',
+                value: 'Do not ask a question to an organizer without having a specific question in mind [See here](https://dontasktoask.com)',
                 inline: true
             },
             {
-                name: 'Rule 9:',
-                value: 'No @everyone/@here mentioning without permission.',
+                name: 'Rule 7:',
+                value: 'No @everyone/@here mentioning without permission',
                 inline: true
-            },)
+            },{
+                name: 'Rule 8:',
+                value: 'The Major League Hacking [code of conduct](http://mlh.io/code-of-conduct) must always be followed',
+                inline: true
+            },{
+                name: 'Rule 9:',
+                value: 'Moderators reserve the right to use their own discretion to ban anyone from this hackathon, regardless of any rule',
+                inline: true
+            })
         msg.channel.send(Embed);
 }, allowDM=true))
 
