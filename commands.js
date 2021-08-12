@@ -1,4 +1,4 @@
-const botChannelsIDs = ['842112480665665536', '843300016440999969']
+const botChannelsIDs = ['842112480665665536', '843300016440999969', '874667083001118770', '874667100730437714']
 const botChannels = []
 
 const adminRoleName = 'Organizer'
@@ -201,7 +201,7 @@ commandList.push(new Command('assist', msg => {
     const Embed = new Discord.MessageEmbed()
         .setColor(0xFF0000)
         .setTitle(user.username + ' needs assistance!')
-        .setDescription(user.toString() + ((msg.guild)? (' has Requested Assistance from the chat ' + msg.channel.toString()):' has Requested Assistance in the DM'))
+        .setDescription(user.toString() + ((msg.guild)? (' has requested assistance from the chat ' + msg.channel.toString()):' has requested assistance in the DM'))
         .setURL(msg.url)
     channel01.send(Embed);
 
@@ -322,9 +322,9 @@ commandList.push(new Command('removewarning', msg => {
 commandList.push(new Command('mywarnings', msg => {
     member = usersCache.find(mem => mem.user.id === msg.author.id)
     if (!member || !member.strikes || member.strikes <= 0)
-        msg.reply('You don\'t have any warnings. That\'s awesome, keep it up!')
+        msg.reply('you don\'t have any warnings. That\'s awesome, keep it up!')
     else if (member.isBanned)
-        msg.reply('You have been banned from the event.')
+        msg.reply('you have been banned from the event.')
     else
-        msg.reply('You have ' + member.strikes + ' strike(s). ' + (maxStrikes - member.strikes) + ' more and you will be banned')
+        msg.reply('you have ' + member.strikes + ' strike(s). ' + (maxStrikes - member.strikes) + ' more and you will be banned')
 }, allowDM=true))
