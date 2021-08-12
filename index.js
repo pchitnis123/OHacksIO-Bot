@@ -21,11 +21,11 @@ client.on("message", msg => {
 });
 
 client.on("message", msg => {
+  if(msg.channel.id === '875210238050066452'){
   if(msg.author.bot) return;
   let addrole = msg.guild.roles.cache.find(role => role.id == "857826276751179776")
   let removerole = msg.guild.roles.cache.find(role => role.id == "874839329237762109")
   const person = msg.member
-  if(msg.channel.id === '840055971492921355'){
     if(msg.content === 'I accept'){
       person.roles.add(addrole);
       person.roles.remove(removerole)

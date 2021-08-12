@@ -87,7 +87,7 @@ commandList.push(new Command('help', msg => {
 
         },{
             name: 'o.assist',
-            value: 'Send a message to our organizers saying you need assistance. They will get back to you ASAP.',
+            value: 'Send a message to our organizers and team saying you need assistance. They will get back to you ASAP.',
             inline: true
         },{
             name: 'o.mywarnings',

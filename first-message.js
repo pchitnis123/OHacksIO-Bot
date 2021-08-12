@@ -5,7 +5,7 @@ module.exports = {
             .setTitle('Rules for the OHacksIO discord server:')
             .setColor(0xFF0000)
             .setFooter("Created by the Tech Team")
-            .setDescription('To join the rest of the server, type "I accept" in this channel.\n\nBy typing "I accept", you consent to the following rules and agree that a violation of any one of these rules could mean being banned from the hackathon.\n')
+            .setDescription('To join the rest of the server, type "I accept" in the <#875210238050066452> channel.\n\nBy typing "I accept", you consent to the following rules and agree that a violation of any one of these rules could mean being banned from the hackathon.\n')
             .addFields({
                 name: "Rule 1:",
                 value: 'No racism',
