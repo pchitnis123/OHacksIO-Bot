@@ -30,11 +30,19 @@ module.exports = {
                 member.dmChannel.send(Embed).catch(() => console.log('Error sending a welcome DM!'))
             }
             
-            msg.delete()
+            msg.delete().catch(error => {
+                if (error.code !== Discord.Constants.APIErrors.UNKNOWN_MESSAGE) {
+                    console.error('Failed to delete the message:', error);
+                }
+            });
         }
 
         else {
-            msg.delete()
+            msg.delete().catch(error => {
+                if (error.code !== Discord.Constants.APIErrors.UNKNOWN_MESSAGE) {
+                    console.error('Failed to delete the message:', error);
+                }
+            });
         }
     }
 }
