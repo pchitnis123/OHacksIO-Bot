@@ -1,12 +1,13 @@
 const botChannelsIDs = ['842112480665665536', '843300016440999969']
 const botChannels = []
 
-const adminRoleName = 'admin'
+const adminRoleName = 'Organizer'
 const prefix = 'o.'
 var commandList = []
 
 const maxStrikes = 3
 var usersCache = []
+
 
 const deadline = new Date('6 Sep 2021 8:00:00 AM EDT')
 //this function is called once on bot connection to correctly initialize the array
@@ -91,6 +92,10 @@ commandList.push(new Command('help', msg => {
         },{
             name: 'o.mywarnings',
             value: 'Display the amount of warnings (strikes) you\'ve got for breaking the rules.',
+            inline: true
+        },{
+            name: 'o.timeleft',
+            value: 'Displays the amount of time due the deadline',
             inline: true
         })
     msg.channel.send(Embed);
@@ -254,21 +259,64 @@ commandList.push(new Command('warn', msg => {
                     message = member.toString() + ', you have 1 strike! You will be banned from the server and disqualified from the event when you reach ' + maxStrikes + ' strikes.'
                 }
             
-                if (member.lastMessage)
-                    member.lastMessage.channel.send(message)
+               
+                msg.channel.send(message)
+
 
                 if (!member.dmChannel)
                     member.createDM().then(channel => {
-                        channel.send(message)
+                            channel.send(message).catch(() => console.log('Error sending a warn DM!'))
                     })
                 else
-                    member.dmChannel.send(message)
+                    member.dmChannel.send(message).catch(() => console.log('Error sending a warn DM!'))
             }
             else
                 msg.reply('User ' + user + ' not found on this server!')
     }
     else
         msg.reply('Please specify a valid user you want to warn')
+}, allowDM=false, adminOnly=true))
+
+commandList.push(new Command('removewarning', msg => {
+    const user = msg.mentions.users.first()
+
+    if(user){
+        const member = msg.guild.member(user)
+            if(member){
+                const memberIndexInUsersCache = usersCache.indexOf(member)
+
+                let message
+
+                if (memberIndexInUsersCache >= 0)
+                {
+                    if (usersCache[memberIndexInUsersCache].strikes >= 0)
+                    {
+                        member.strikes = member.strikes - 1
+                        message = member.toString() + ', you now have ' + usersCache[memberIndexInUsersCache].strikes + ' strike(s)! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
+                    }
+                    else
+                    {
+                        message = member.toString() + ' you have no strikes. Strike unable to be removed.'
+                    }
+                }
+                else {
+                    message = member.toString() + ' you have no strikes. Strike unable to be removed.'
+                }
+
+                msg.channel.send(message)
+
+                if (!member.dmChannel)
+                    member.createDM().then(channel => {
+                    channel.send(message).catch(() => console.log('Error sending a warn DM!'))
+                })
+                else
+                    member.dmChannel.send(message).catch(() => console.log('Error sending a warn DM!'))
+            }
+            else
+                msg.reply('User ' + user + ' not found on this server!')
+    }
+    else msg.reply('Please specify a valid user you want to warn')
+    
 }, allowDM=false, adminOnly=true))
 
 commandList.push(new Command('mywarnings', msg => {
