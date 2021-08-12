@@ -289,7 +289,7 @@ commandList.push(new Command('removewarning', msg => {
 
                 if (memberIndexInUsersCache >= 0)
                 {
-                    if (usersCache[memberIndexInUsersCache].strikes >= 0)
+                    if (usersCache[memberIndexInUsersCache].strikes > 0)
                     {
                         member.strikes = member.strikes - 1
                         message = member.toString() + ', you now have ' + usersCache[memberIndexInUsersCache].strikes + ' strike(s)! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
