@@ -1,15 +1,29 @@
 const botChannelsIDs = ['842112480665665536', '843300016440999969', '874667083001118770', '874667100730437714']
 const botChannels = []
 
-const adminRoleName = 'Organizer'
+const adminRoleNames = ['Organizer', 'Team']
 const prefix = 'o.'
 var commandList = []
 
 const maxStrikes = 3
-var usersCache = []
+var userCache = []
 
 
 const deadline = new Date('6 Sep 2021 8:00:00 AM EDT')
+
+var fs = require('fs')
+
+fs.readFile('./data/userCache.json', (err, data) => {
+    if (err) console.log('userCache reading error!\n' + err)
+    userCache = JSON.parse(data)
+  })
+
+function saveUserCache() {
+    fs.writeFile('./data/userCache.json', JSON.stringify(userCache), err => {
+        if (err) console.log('userCache saving error!\n' + err)
+    })
+}
+
 //this function is called once on bot connection to correctly initialize the array
 function initialize() {
     botChannelsIDs.forEach(ID => { botChannels.push(client.channels.cache.find(channel => channel.id === ID)) })
@@ -23,7 +37,7 @@ class Command {
     }
     execute(msg, commandParams) {
         if (this.allowDM || msg.guild)
-            if (!this.adminOnly || (msg.guild && msg.member.roles.cache.find(role => role.name == adminRoleName)))
+            if (!this.adminOnly || (msg.guild && msg.member.roles.cache.find(role => adminRoleNames.find(admin => role.name))))
                 this.behaviour(msg, commandParams)
             else
                 msg.reply('This command is for admins only!')
@@ -34,9 +48,9 @@ class Command {
 
 //function to execute when a new message recieved
 function handle (msg){
-    if (msg.content.startsWith(prefix)) //check if starts with prefix
+    if (msg.content.toLowerCase().startsWith(prefix)) //check if starts with prefix
     {
-            const command = msg.content.substring(prefix.length) //remove the prefix
+            const command = msg.content.substring(prefix.length).toLowerCase() //remove the prefix
             if (command) //if command is valid (not only prefix)
             {
                 const commandComponents = command.split(' ', 1) //split the command into components divided with space
@@ -235,27 +249,31 @@ commandList.push(new Command('warn', msg => {
     if (user && !user.bot) {
         const member = msg.guild.member(user);
             if (member) {
-                const memberIndexInUsersCache = usersCache.indexOf(member)
+                const memberIndexInUserCache = userCache.findIndex(cacheUser => {return cacheUser.id == user.id})
                 
                 let message
                 
-                if (memberIndexInUsersCache >= 0)
+                if (memberIndexInUserCache >= 0)
                 {
-                    usersCache[memberIndexInUsersCache].strikes++
-                    if (usersCache[memberIndexInUsersCache].strikes >= maxStrikes)
+                    userCache[memberIndexInUserCache].strikes++
+                    if (userCache[memberIndexInUserCache].strikes >= maxStrikes)
                     {
-                        message = member.toString() + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event.'
-                        usersCache[memberIndexInUsersCache].isBanned = true
+                        message = member.toString() + ', you have ' + userCache[memberIndexInUserCache].strikes + ' strikes! You will be banned from the server and disqualified from the event.'
+                        userCache[memberIndexInUserCache].isBanned = true
                         member.kick('You were kicked because you\'ve reached ' + maxStrikes + 'strikes')
                     }
                     else
                     {
-                        message = member.toString() + ', you have ' + usersCache[memberIndexInUsersCache].strikes + ' strikes! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
+                        message = member.toString() + ', you have ' + userCache[memberIndexInUserCache].strikes + ' strikes! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - userCache[memberIndexInUserCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
                     }
                 }
                 else {
-                    member.strikes = 1
-                    usersCache.push(member)
+                    userCache.push({
+                        id:  user.id,
+                        displayName: member.displayName,
+                        nickname: member.nickname,
+                        strikes: 1,
+                    })
                     message = member.toString() + ', you have 1 strike! You will be banned from the server and disqualified from the event when you reach ' + maxStrikes + ' strikes.'
                 }
             
@@ -269,6 +287,8 @@ commandList.push(new Command('warn', msg => {
                     })
                 else
                     member.dmChannel.send(message).catch(() => console.log('Error sending a warn DM!'))
+
+                saveUserCache()
             }
             else
                 msg.reply('User ' + user + ' not found on this server!')
@@ -283,16 +303,16 @@ commandList.push(new Command('removewarning', msg => {
     if(user && !user.bot){
         const member = msg.guild.member(user)
             if(member){
-                const memberIndexInUsersCache = usersCache.indexOf(member)
+                const memberIndexInUserCache = userCache.indexOf(member)
 
                 let message
 
-                if (memberIndexInUsersCache >= 0)
+                if (memberIndexInUserCache >= 0)
                 {
-                    if (usersCache[memberIndexInUsersCache].strikes > 0)
+                    if (userCache[memberIndexInUserCache].strikes > 0)
                     {
                         member.strikes = member.strikes - 1
-                        message = member.toString() + ', you now have ' + usersCache[memberIndexInUsersCache].strikes + ' strike(s)! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - usersCache[memberIndexInUsersCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
+                        message = member.toString() + ', you now have ' + userCache[memberIndexInUserCache].strikes + ' strike(s)! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - userCache[memberIndexInUserCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
                     }
                     else
                     {
@@ -314,13 +334,15 @@ commandList.push(new Command('removewarning', msg => {
             }
             else
                 msg.reply('User ' + user + ' not found on this server!')
+
+            saveUserCache()
     }
-    else msg.reply('Please specify a valid user you want to warn')
+    else msg.reply('Please specify a valid user you want to remove a warning from')
     
 }, allowDM=false, adminOnly=true))
 
 commandList.push(new Command('mywarnings', msg => {
-    member = usersCache.find(mem => mem.user.id === msg.author.id)
+    member = userCache.find(mem => mem.user.id === msg.author.id)
     if (!member || !member.strikes || member.strikes <= 0)
         msg.reply('you don\'t have any warnings. That\'s awesome, keep it up!')
     else if (member.isBanned)
