@@ -232,7 +232,7 @@ commandList.push(new Command('timeleft', msg => {
 
 commandList.push(new Command('warn', msg => {
     const user = msg.mentions.users.first()
-    if (user) {
+    if (user && !user.bot) {
         const member = msg.guild.member(user);
             if (member) {
                 const memberIndexInUsersCache = usersCache.indexOf(member)
@@ -280,7 +280,7 @@ commandList.push(new Command('warn', msg => {
 commandList.push(new Command('removewarning', msg => {
     const user = msg.mentions.users.first()
 
-    if(user){
+    if(user && !user.bot){
         const member = msg.guild.member(user)
             if(member){
                 const memberIndexInUsersCache = usersCache.indexOf(member)
