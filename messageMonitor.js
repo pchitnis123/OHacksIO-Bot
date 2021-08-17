@@ -4,7 +4,7 @@ const forbiddenWords = ["4r5e", "5h1t", "5hit", "a55", "anal", "anus", "ar5e", "
 module.exports = {
     monitor: function (msg) {
         for(var i = 0; i < forbiddenWords.length; i++){
-            if(msg.content.includes(forbiddenWords[i])){
+            if(msg.content.toLowerCase().includes(forbiddenWords[i])){
                 let user = msg.author
                 
                 const Embed = new Discord.MessageEmbed()

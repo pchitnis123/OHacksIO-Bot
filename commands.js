@@ -303,15 +303,16 @@ commandList.push(new Command('removewarning', msg => {
     if(user && !user.bot){
         const member = msg.guild.member(user)
             if(member){
-                const memberIndexInUserCache = userCache.indexOf(member)
+                const memberIndexInUserCache = userCache.findIndex(cacheUser => {return cacheUser.id == user.id})
 
                 let message
 
                 if (memberIndexInUserCache >= 0)
                 {
+                    
                     if (userCache[memberIndexInUserCache].strikes > 0)
                     {
-                        member.strikes = member.strikes - 1
+                        userCache[memberIndexInUserCache].strikes--
                         message = member.toString() + ', you now have ' + userCache[memberIndexInUserCache].strikes + ' strike(s)! You will be banned from the server and disqualified from the event when you get ' + (maxStrikes - userCache[memberIndexInUserCache].strikes) + ' more strike(s) and reach ' + maxStrikes + ' strikes.'
                     }
                     else
@@ -342,11 +343,16 @@ commandList.push(new Command('removewarning', msg => {
 }, allowDM=false, adminOnly=true))
 
 commandList.push(new Command('mywarnings', msg => {
-    member = userCache.find(mem => mem.user.id === msg.author.id)
-    if (!member || !member.strikes || member.strikes <= 0)
+    const user = msg.author
+    const memberIndexInUserCache = userCache.findIndex(cacheUser => {return cacheUser.id == user.id})
+
+    if(memberIndexInUserCache <= 0){
         msg.reply('you don\'t have any warnings. That\'s awesome, keep it up!')
-    else if (member.isBanned)
+    }
+    else if(userCache[memberIndexInUserCache].isBanned){
         msg.reply('you have been banned from the event.')
-    else
-        msg.reply('you have ' + member.strikes + ' strike(s). ' + (maxStrikes - member.strikes) + ' more and you will be banned')
+    }
+    else {
+        msg.reply('you have ' + userCache[memberIndexInUserCache].strikes + ' strike(s). ' + (maxStrikes - userCache[memberIndexInUserCache].strikes) + ' more and you will be banned')
+    }
 }, allowDM=true))
