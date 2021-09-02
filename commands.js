@@ -204,6 +204,10 @@ commandList.push(new Command('faq', msg => {
             name: "Why Join?",
             value: "We are planning on holding multiple mini-games, as well as having workshops from our sponsors! Top placers in the Hackathon will be receiving prizes, and will be featured on this website! This is also an excellent opportunity to learn and show what you know about everything computer science related.",
             inline: true
+        }, {
+            name: 'What is the theme of the hackathon?',
+            value: "The theme will be announced at the opening ceremony! We don't want anyone getting a headstart on their project, do we?",
+            inline: true
         })
     msg.channel.send(Embed);
 }, allowDM=true))
