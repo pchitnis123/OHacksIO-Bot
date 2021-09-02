@@ -25,7 +25,7 @@ module.exports = {
 
         const person = msg.member
 
-        if(msg.content === 'I accept'){
+        if(msg.content.toLowerCase() === 'i accept'){
             person.roles.add(addrole);
             person.roles.remove(removerole)
             
